@@ -1,22 +1,7 @@
-const simulateDelays = false;
-
 var progressThumbnailsCancelled = false;
 
-
 async function init() {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
-  // read cache file to showcase functionality
-  const result = await readCacheFile("testerInitFile.txt");
-  // Failure -> assume file doesn't yet exist
-  if (typeof result === "string" && result.startsWith("Error:")) {
-    const contents = `random number: ${Math.floor(Math.random() * 100000)}`;
-    const base64Encoded = fromByteArray(Uint8Array.from(contents, c => c.charCodeAt(0)));
-    await writeCacheFile("testerInitFile.txt", base64Encoded);
-    consoleLog("info", `Created file with contents: ${contents}`);
-  } else {
-    consoleLog("info", `Read from file: ${String.fromCharCode(...toByteArray(result))}`);
-  }
-  consoleLog("info", "Tester External plugin initialized");
+  consoleLog("info", "xnxx External plugin initialized");
   return true;
 }
 
@@ -45,7 +30,6 @@ async function parseExternalLink(uriString) {
           minFramesPerSecond: args["minFramesPerSecond"] ? parseInt(args["minFramesPerSecond"], 10) : null,
           maxFramesPerSecond: args["maxFramesPerSecond"] ? parseInt(args["maxFramesPerSecond"], 10) : null,
           virtualReality: args["virtualReality"] ? args["virtualReality"] === "true" : null,
-          // categories and keywords not yet fully supported
         },
         pageCount: parseInt(args["page"] ?? "0", 10),
       };
@@ -68,40 +52,41 @@ async function parseExternalLink(uriString) {
 }
 
 async function runFunctionalityTest() {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
   consoleLog("info", "Functionality test completed");
   return true;
 }
 
 async function getHomePage(page) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
-  return Array.from({
-    length: 10
-  }, (_, index) => ({
-    iD: String(Math.trunc(index * Math.PI * 10000)),
-    title: `Test homepage video ${index}, page ${page}`,
-    thumbnail: "https://placehold.co/1280x720.png",
-    thumbnailHttpHeaders: {"X-Ignore": "example-header"},
-    previewVideo: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-    previewVideoHttpHeaders: {"X-Ignore": "example-header"},
-    duration: 120 + index * 10, // seconds
-    viewsTotal: Math.trunc(index * Math.PI * 1000000),
-    ratingsPositivePercent: Math.trunc(index * Math.PI * 10) % 101,
-    maxQuality: 720,
+  const results = [];
+  // TODO: Fetch from https://xnxx.com/home and populate results
+  
+  /* Expected schema per item:
+  results.push({
+    iD: "",
+    title: "",
+    thumbnail: "",
+    thumbnailHttpHeaders: {},
+    previewVideo: "",
+    previewVideoHttpHeaders: {},
+    duration: 0,
+    viewsTotal: 0,
+    ratingsPositivePercent: 0,
+    maxQuality: 0,
     virtualReality: false,
-    authorName: `Tester-author ${index}`,
-    authorID: `Tester-author ${index}`,
-    verifiedAuthor: index % 2 === 0,
-    // Make every 4th video a fail
-    scrapeFailMessage: index % 4 !== 0 ? "Test fail scrape message" : null,
-  }));
+    authorName: "",
+    authorID: "",
+    verifiedAuthor: false,
+    scrapeFailMessage: null,
+  });
+  */
+  return results;
 }
 
 async function downloadThumbnail(uri, thumbnailHttpHeaders) {
   try {
     const response = await httpRequest(uri);
     if (response.status === 200) {
-      return response.body; // base64 encoded bytes
+      return response.body; 
     } else {
       consoleLog("error", `Error downloading thumbnail: ${response.status}`);
       return "";
@@ -113,105 +98,77 @@ async function downloadThumbnail(uri, thumbnailHttpHeaders) {
 }
 
 async function getSearchSuggestions(searchString) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 200));
-  const results = Array.from({
-    length: 5
-  }, (_, index) => `${searchString}-${index}`);
-  return results;
+  const suggestions = [];
+  // TODO: Fetch search suggestions from xnxx.com
+  return suggestions; // Array of strings
 }
 
 async function getSearchResults(request, page) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
-  if (page === 5) return [];
-  return Array.from({
-    length: 10
-  }, (_, index) => ({
-    iD: String(Math.trunc(index * Math.PI * 10000)),
-    title: `Test result video ${index}, page ${page}, request ${request["searchString"]}`,
-    thumbnail: "https://placehold.co/1280x720.png",
-    thumbnailHttpHeaders: {"X-Ignore": "example-header"},
-    previewVideo: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-    previewVideoHttpHeaders: {"X-Ignore": "example-header"},
-    duration: 120 + index * 10, // seconds
-    viewsTotal: Math.trunc(index * Math.PI * 1000000),
-    ratingsPositivePercent: parseInt((index * Math.PI * 10000)
-      .toFixed(2)) || 50,
-    maxQuality: 720,
+  const results = [];
+  // TODO: Fetch from https://xnxx.com/search and populate results
+  
+  /* Expected schema per item:
+  results.push({
+    iD: "",
+    title: "",
+    thumbnail: "",
+    thumbnailHttpHeaders: {},
+    previewVideo: "",
+    previewVideoHttpHeaders: {},
+    duration: 0,
+    viewsTotal: 0,
+    ratingsPositivePercent: 0,
+    maxQuality: 0,
     virtualReality: false,
-    authorName: `Tester-author ${index}`,
-    authorID: `Tester-author ${index}`,
-    verifiedAuthor: index % 2 === 0,
-    // Make every 4th video a fail
-    scrapeFailMessage: index % 4 !== 0 ? "Test fail scrape message" : null,
-  }));
+    authorName: "",
+    authorID: "",
+    verifiedAuthor: false,
+    scrapeFailMessage: null,
+  });
+  */
+  return results;
 }
 
 function getVideoUriFromID(videoID) {
-  return `https://example.com/${videoID}`;
+  return `https://xnxx.com/video?videoId=${videoID}`;
 }
 
 async function getVideoMetadata(videoId, uvp) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
+  // TODO: Fetch metadata from xnxx.com
+  
   return {
     iD: videoId,
-    m3u8Uris: {
-      1080: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-      720: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-      480: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-    },
-    title: "Tester video metadata title",
+    m3u8Uris: {}, // e.g., { 1080: "url", 720: "url" }
+    title: "",
     universalVideoPreview: uvp,
-    // Change this to test partial metadata scrape fail
-    //scrapeFailMessage: "Test fail scrape message",
-    authorID: `tester-author-${videoId}`,
-    authorName: "Tester-author",
-    authorSubscriberCount: 335433,
-    authorAvatar: "https://placehold.co/1280x720.png",
-    actors: [
-      {
-        "name": "Tester-actor-1",
-        "authorID": "Tester-author-actor-1",
-        "avatar": "https://placehold.co/200x200.png"
-      },
-      {
-        "name": "Tester-actor-2",
-        "authorID": "Tester-author-actor-2",
-        "avatar": "https://placehold.co/200x200.png"
-      },
-    ],
-    description: "Tester video description".repeat(10),
-    viewsTotal: 2532823,
-    tags: ["Tester-tag-1", "Tester-tag-2"],
-    categories: ["Tester-category-1", "Tester-category-2"],
-    uploadDate: Math.floor(Date.now() / 1000),
-    ratingsPositiveTotal: 90,
-    ratingsNegativeTotal: 10,
-    ratingsTotal: 47384,
+    authorID: "",
+    authorName: "",
+    authorSubscriberCount: 0,
+    authorAvatar: "",
+    actors: [], // e.g., [{ name: "", authorID: "", avatar: "" }]
+    description: "",
+    viewsTotal: 0,
+    tags: [],
+    categories: [],
+    uploadDate: 0,
+    ratingsPositiveTotal: 0,
+    ratingsNegativeTotal: 0,
+    ratingsTotal: 0,
     virtualReality: false,
-    chapters: {
-      0: "Chapter 1",
-      120: "Chapter 2",
-      240: "Chapter 3",
-    },
+    chapters: {}, // e.g., { 0: "Intro", 120: "Part 1" }
     rawHtml: null,
   };
 }
 
 async function getProgressThumbnails(videoID, rawHtml) {
-  // reset cancellation flag
   progressThumbnailsCancelled = false;
-  // Simulate heavy processing (split into chunks so cancellation can be checked)
-  for (let i = 0; i < 50; i++) {
-    if (progressThumbnailsCancelled) return [];
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
+  const thumbnails = [];
+  
+  // TODO: Fetch and process sprite/thumbnail map from xnxx.com
   if (progressThumbnailsCancelled) return [];
-  const response = await httpRequest("https://placehold.co/720x480.png");
-  if (response.status !== 200) throw new Error("Failed to download/convert placeholder image");
-  if (progressThumbnailsCancelled) return [];
-  // Return 1000 copies of the same image (base64 encoded body)
-  return Array(1000)
-    .fill(response.body);
+  
+  // Return array of base64 encoded bytes
+  return thumbnails;
 }
 
 function cancelGetProgressThumbnails() {
@@ -220,137 +177,107 @@ function cancelGetProgressThumbnails() {
 }
 
 function getCommentUriFromID(commentID, videoID) {
-  return `https://example.com/${videoID}/${commentID}`;
+  return `https://xnxx.com/comments?videoId=${videoID}&commentId=${commentID}`;
 }
 
 async function getComments(videoID, rawHtml, page) {
-  if (page === 5) return [];
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
-  return Array.from({
-    length: 10
-  }, (_, index) => ({
-    iD: `comment-${index}`,
-    videoID,
-    author: `author-${index}`,
-    commentBody: Array(5)
-      .fill(`test comment ${index}, page ${page} `)
-      .join(""),
-    hidden: index % 4 === 0,
-    authorID: `author-${index}`,
-    countryID: "US",
+  const comments = [];
+  // TODO: Fetch comments from xnxx.com
+  
+  /* Expected schema per item:
+  comments.push({
+    iD: "",
+    videoID: videoID,
+    author: "",
+    commentBody: "",
+    hidden: false,
+    authorID: "",
+    countryID: "",
     orientation: null,
-    profilePicture: "https://placehold.co/240x240.png",
-    ratingsPositiveTotal: index % 4 === 0 ? 30 : null,
-    ratingsNegativeTotal: index % 4 === 0 ? 2 : null,
-    ratingsTotal: index % 4 === 0 ? 32 : 76,
-    commentDate: Math.floor(Date.now() / 1000),
-    replyComments: index % 2 === 0 ?
-      Array.from({
-        length: 3
-      }, (_, index) => ({
-        iD: `comment-reply-${index}`,
-        videoID,
-        author: `author-reply-${index}`,
-        commentBody: Array(5)
-          .fill(`test reply comment ${index} `)
-          .join(""),
-        hidden: index % 4 === 0,
-        authorID: `author-reply-${index}`,
-        countryID: "US",
-        orientation: null,
-        profilePicture: "https://placehold.co/240x240",
-        ratingsPositiveTotal: index % 2 === 0 ? 4 : null,
-        ratingsNegativeTotal: index % 2 === 0 ? 1 : null,
-        ratingsTotal: index % 2 === 0 ? 5 : 6,
-        commentDate: Math.floor(Date.now() / 1000),
-        replyComments: [],
-        // Make every 4th comment a fail
-        scrapeFailMessage: index % 4 !== 0 ? "Test fail scrape message" : null,
-      })) : [],
-    // Make every 4th comment a fail
-    scrapeFailMessage: index % 4 !== 0 ? "Test fail scrape message" : null,
-  }));
+    profilePicture: "",
+    ratingsPositiveTotal: 0,
+    ratingsNegativeTotal: 0,
+    ratingsTotal: 0,
+    commentDate: 0,
+    replyComments: [], // Recursive array of identical objects
+    scrapeFailMessage: null,
+  });
+  */
+  return comments;
 }
 
 async function getVideoSuggestions(videoID, rawHtml, page) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
-  if (page === 5) return [];
-  return Array.from({
-    length: 10
-  }, (_, index) => ({
-    iD: String(Math.trunc(index * Math.PI * 10000)),
-    title: `Test suggestion video ${index}`,
-    thumbnail: "https://placehold.co/1280x720.png",
-    thumbnailHttpHeaders: {"X-Ignore": "example-header"},
-    previewVideo: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-    previewVideoHttpHeaders: {"X-Ignore": "example-header"},
-    duration: 120 + index * 10, // seconds
-    viewsTotal: Math.trunc(index * Math.PI * 1000000),
-    ratingsPositivePercent: parseInt((index * Math.PI * 10000)
-      .toFixed(2)) || 50,
-    maxQuality: 720,
+  const suggestions = [];
+  // TODO: Fetch related/suggested videos from xnxx.com
+  
+  /* Expected schema per item:
+  suggestions.push({
+    iD: "",
+    title: "",
+    thumbnail: "",
+    thumbnailHttpHeaders: {},
+    previewVideo: "",
+    previewVideoHttpHeaders: {},
+    duration: 0,
+    viewsTotal: 0,
+    ratingsPositivePercent: 0,
+    maxQuality: 0,
     virtualReality: false,
-    authorName: `Tester-suggestion-author ${index}`,
-    authorID: `Tester-suggestion-author ${index}`,
-    verifiedAuthor: index % 2 === 0,
-    // Make every 4th video a fail
-    scrapeFailMessage: index % 4 !== 0 ? "Test fail scrape message" : null,
-  }));
+    authorName: "",
+    authorID: "",
+    verifiedAuthor: false,
+    scrapeFailMessage: null,
+  });
+  */
+  return suggestions;
 }
 
 function getAuthorUriFromID(authorID) {
-  return `https://example.com/${authorID}`;
+  return `https://xnxx.com/author?authorId=${authorID}`;
 }
 
 async function getAuthorPage(authorID) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
+  // TODO: Fetch author profile from xnxx.com
+  
   return {
     iD: authorID,
-    name: "Test author name",
-    avatar: "https://placehold.co/240x240.png",
-    banner: "https://placehold.co/1270x400.png",
-    aliases: ["Test alias 1", "Test alias 2"],
-    description: "Very long description".repeat(1000),
-    advancedDescription: Object.fromEntries(
-      Array.from({
-        length: 1000
-      }, (_, i) => [`Test description key ${i + 1}`, `Test description value ${i + 1}`])
-    ),
-    externalLinks: {
-      "external link 1": "https://example.com/link1",
-      "external link 2": "https://example.com/link2",
-      "external link 3": "https://example.com/link3",
-    },
-    viewsTotal: 23773212,
-    videosTotal: 114,
-    subscribers: 573529,
-    rank: 3746,
+    name: "",
+    avatar: "",
+    banner: "",
+    aliases: [],
+    description: "",
+    advancedDescription: {},
+    externalLinks: {},
+    viewsTotal: 0,
+    videosTotal: 0,
+    subscribers: 0,
+    rank: 0,
     rawHtml: "",
   };
 }
 
 async function getAuthorVideos(authorID, page) {
-  if (simulateDelays) await new Promise(r => setTimeout(r, 2000));
-  if (page === 5) return [];
-  return Array.from({
-    length: 10
-  }, (_, index) => ({
-    iD: String(Math.trunc(index * Math.PI * 10000)),
-    title: `Test author video ${index}, page ${page}`,
-    thumbnail: "https://placehold.co/1280x720.png",
-    thumbnailHttpHeaders: {"X-Ignore": "example-header"},
-    previewVideo: "https://docs.evostream.com/sample_content/assets/bunny.mp4",
-    previewVideoHttpHeaders: {"X-Ignore": "example-header"},
-    duration: 120 + index * 10, // seconds
-    viewsTotal: Math.trunc(index * Math.PI * 1000000),
-    ratingsPositivePercent: parseInt((index * Math.PI * 10000)
-      .toFixed(2)) || 50,
-    maxQuality: 720,
+  const authorVideos = [];
+  // TODO: Fetch author's video list from xnxx.com
+  
+  /* Expected schema per item:
+  authorVideos.push({
+    iD: "",
+    title: "",
+    thumbnail: "",
+    thumbnailHttpHeaders: {},
+    previewVideo: "",
+    previewVideoHttpHeaders: {},
+    duration: 0,
+    viewsTotal: 0,
+    ratingsPositivePercent: 0,
+    maxQuality: 0,
     virtualReality: false,
-    authorName: `Tester-author-same ${index}`,
-    authorID: `Tester-author-same ${index}`,
-    verifiedAuthor: index % 2 === 0,
-    // Make every 4th video a fail
-    scrapeFailMessage: index % 4 !== 0 ? "Test fail scrape message" : null,
-  }));
+    authorName: "",
+    authorID: "",
+    verifiedAuthor: false,
+    scrapeFailMessage: null,
+  });
+  */
+  return authorVideos;
 }
