@@ -1,22 +1,22 @@
 apiVersion: 1.0
 metadata:
-  codeName: "com.hedon_haven.tester_external_js"
-  prettyName: "Tester as External (js)"
-  version: v0.3.1
-  developer: "Hedon dev"
-  contactEmail: "contact@hedon-haven.top"
-  description: "A tester plugin written in JavaScript for testing external plugins"
-  updateUrl: "https://github.com/Hedon-Haven/3rd-party-plugin-examples/releases/latest/download/tester_external_js-update.yaml"
-  issuesUrl: "https://github.com/Hedon-Haven/3rd-party-plugin-examples/issues"
+  codeName: "com.custom.xnxx_plugin"
+  prettyName: "xnxx External Plugin"
+  version: v0.1.0
+  developer: ""
+  contactEmail: ""
+  description: "External plugin template targeting xnxx.com"
+  updateUrl: ""
+  issuesUrl: ""
 
 providerData:
-  iconUrl: "https://placehold.co/favicon.ico"
-  serviceUrl: "https://example.com"
+  iconUrl: "https://xnxx.com/favicon.ico"
+  serviceUrl: "https://xnxx.com"
   handleUrls:
-    - "https://example.com/home"
-    - "https://example.com/search"
-    - "https://example.com/video"
-    - "https://example.com/author"
+    - "https://xnxx.com/home"
+    - "https://xnxx.com/search"
+    - "https://xnxx.com/video"
+    - "https://xnxx.com/author"
 
 initialPageCounts:
   initialHomePage: 0
